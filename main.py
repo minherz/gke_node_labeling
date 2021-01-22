@@ -35,7 +35,7 @@ def eprint(*args, **kwargs):
 def get_node_data(node_name, node_label_names):
     try:
         with open('/var/run/secrets/kubernetes.io/serviceaccount/token', 'r') as file:
-            token = file.read()
+            auth_token = file.read()
     except OSError:
         eprint('Failed reading /var/run/secrets/kubernetes.io/serviceaccount/token')
         exit(1)
@@ -44,7 +44,7 @@ def get_node_data(node_name, node_label_names):
         exit(1)
 
     resp = requests.get(url='https://kubernetes.default.svc/api/v1/nodes/{node_name}'.format(
-        node_name=node_name), headers={'Authorization': 'Bearer ' + token}, verify=False)
+        node_name=node_name), headers={'Authorization': 'Bearer ' + auth_token}, verify=False)
     if resp.status_code != HTTPStatus.OK:
         eprint('Failed to read data from ''{node}'' (status: {status})'.format(
             node=node_name, status=resp.status_code))
