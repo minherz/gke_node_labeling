@@ -43,8 +43,8 @@ def get_node_data(node_name, node_label_names):
         eprint('Failed to read token')
         exit(1)
 
-    resp = requests.get(url='https://kubernetes.default.svc/api/v1/nodes/{node_name}'.format(
-        node_name=node_name), headers={'Authorization': 'Bearer ' + auth_token}, verify=False)
+    resp = requests.get(url='https://kubernetes.default.svc/api/v1/nodes/' + node_name,
+                        headers={'Authorization': 'Bearer ' + auth_token}, verify=False)
     if resp.status_code != HTTPStatus.OK:
         eprint('Failed to read data from ''{node}'' (status: {status})'.format(
             node=node_name, status=resp.status_code))
