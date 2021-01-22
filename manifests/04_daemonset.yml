@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: node-labeling
+  labels:
+    app: node-labeling
+spec:
+  selector:
+    matchLabels:
+      app: node-labeling
+  updateStrategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        name: node-labeling
+        app: node-labeling
+    spec:
+      serviceAccountName: node-labeling-robot
+      volumes:
+      - name: files
+        configMap:
+          name: node-labeling-files
+      initContainers:
+      - image: python:3.8
+        name: node-labeling
+        command: ["/bin/bash"]
+        args: ["-c", "pip3 install -r /etc/node-labeling-app/requirements.txt; python3 /etc/node-labeling-app/main.py --name workload"]
+        env:
+        - name: NODE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
+        volumeMounts:
+        - name: files
+          mountPath: /etc/node-labeling-app
+      containers:
+      - image: "gcr.io/google-containers/pause:2.0"
+        name: pause
