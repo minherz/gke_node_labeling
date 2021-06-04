@@ -32,6 +32,7 @@ spec:
         app: node-labeling
     spec:
       serviceAccountName: node-labeling-robot
+      automountServiceAccountToken: true
       volumes:
       - name: files
         configMap:
